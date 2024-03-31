@@ -1,0 +1,17 @@
+:root {
+  --font-family-regular: -apple-system, system-ui, "Segoe UI", Roboto, Noto, Oxygen-Sans, Ubuntu, Cantrell,
+    "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --content-primary: #202020;
+
+  --background-base-primary: #fff;
+  --background-base-secondary: #fcfaf8;
+  --background-base-tertiary: #f9f7f6;
+}
+
+/* Scrollbar */
+:root {
+  --scrollbar-thumb-idle: #c1c1c1;
+  --scrollbar-thumb-hover: #848484;
+  --scrollbar-thumb-track: #fafafa;
+}

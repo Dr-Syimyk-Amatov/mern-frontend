@@ -1,0 +1,32 @@
+html[data-platform="windows"] * {
+  scrollbar-color: var(--scrollbar-thumb-idle) var(--scrollbar-thumb-track);
+  scrollbar-width: thin;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--background-base-secondary);
+}
+
+body {
+  margin: 0;
+  color: var(--content-primary);
+  font-family: var(--font-family-regular);
+  font-size: 13px;
+
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: auto auto auto 0;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+#root {
+  height: 100%;
+}
