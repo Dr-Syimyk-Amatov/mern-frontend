@@ -1,8 +1,12 @@
-import { Card, CardContent, Button, CardHeader, TextField } from "@mui/material";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, TextField, Alert } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { object, string } from "yup";
 import { useFormik } from "formik";
+
 import "./register.scss";
 import { registerUser } from "../../api";
+import { LoadingState } from "../../enums";
 
 const validationSchema = object({
   email: string().email("Enter a valid email").required("Email is required"),
@@ -12,6 +16,8 @@ const validationSchema = object({
 });
 
 export function Register() {
+  const [loadState, setLoadState] = useState(LoadingState.Idle);
+  const isLoading = loadState === LoadingState.Fetching;
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -21,8 +27,13 @@ export function Register() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const user = await registerUser(values);
-      console.log(user);
+      try {
+        setLoadState(LoadingState.Fetching);
+        await registerUser(values);
+        setLoadState(LoadingState.Completed);
+      } catch (error) {
+        setLoadState(LoadingState.Failed);
+      }
     },
   });
 
@@ -31,6 +42,11 @@ export function Register() {
       <Card variant="outlined" sx={{ minWidth: "500px" }}>
         <CardHeader title="Register"></CardHeader>
         <CardContent>
+          {loadState === LoadingState.Failed && (
+            <Alert variant="outlined" severity="error">
+              Failed to register
+            </Alert>
+          )}
           <form className="form" onSubmit={formik.handleSubmit}>
             <TextField
               value={formik.values.email}
@@ -89,9 +105,9 @@ export function Register() {
               margin="normal"
               variant="outlined"
             />
-            <Button type="submit" variant="outlined" sx={{ marginTop: "16px" }}>
+            <LoadingButton loading={isLoading} type="submit" variant="outlined" sx={{ marginTop: "16px" }}>
               Register
-            </Button>
+            </LoadingButton>
           </form>
         </CardContent>
       </Card>

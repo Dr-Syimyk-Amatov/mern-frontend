@@ -1,7 +1,11 @@
-import { Card, CardHeader, CardContent, TextField, Button } from "@mui/material";
+import { useState } from "react";
+import { Card, CardHeader, CardContent, TextField, Alert } from "@mui/material";
 import { useFormik } from "formik";
 import { object, string } from "yup";
+import { LoadingButton } from "@mui/lab";
+
 import { useAuth } from "../../hooks";
+import { LoadingState } from "../../enums";
 
 const validationSchema = object({
   email: string().email("Enter a valid email").required("Email is required"),
@@ -10,6 +14,9 @@ const validationSchema = object({
 
 export function Login() {
   const { login } = useAuth();
+  const [loadState, setLoadState] = useState(LoadingState.Idle);
+  const isLoading = loadState === LoadingState.Fetching;
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -17,7 +24,13 @@ export function Login() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      await login(values);
+      try {
+        setLoadState(LoadingState.Fetching);
+        await login(values);
+        setLoadState(LoadingState.Completed);
+      } catch (error) {
+        setLoadState(LoadingState.Failed);
+      }
     },
   });
 
@@ -26,6 +39,11 @@ export function Login() {
       <Card variant="outlined" sx={{ minWidth: "500px" }}>
         <CardHeader title="Login"></CardHeader>
         <CardContent>
+          {loadState === LoadingState.Failed && (
+            <Alert variant="outlined" severity="error">
+              Wrong login or password
+            </Alert>
+          )}
           <form className="form" onSubmit={formik.handleSubmit}>
             <TextField
               value={formik.values.email}
@@ -56,9 +74,9 @@ export function Login() {
               margin="normal"
               variant="outlined"
             />
-            <Button type="submit" variant="outlined" sx={{ marginTop: "16px" }}>
-              Register
-            </Button>
+            <LoadingButton loading={isLoading} type="submit" variant="outlined" sx={{ marginTop: "16px" }}>
+              Login
+            </LoadingButton>
           </form>
         </CardContent>
       </Card>

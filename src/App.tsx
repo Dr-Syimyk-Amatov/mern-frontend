@@ -1,19 +1,40 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+
 import "./App.scss";
-import { Login, Register } from "./components/auth";
-import { Home } from "./components/home";
 import { AuthProvider } from "./hooks";
 import { ProtectedRoute } from "./routes";
-import { PageLayout } from "./components/page-layout/page-layout";
+import { initErrorHandler } from "./api";
+import { UserProvider } from "./contexts";
+import { Login, Register } from "./components/auth";
+import { Home } from "./components/home";
+import { PageLayout } from "./components/page-layout";
 
 function App() {
+  const navigate = useNavigate();
+  const [isInit, setInit] = useState(false);
+
+  useEffect(() => {
+    if (!isInit) {
+      initErrorHandler(navigate);
+      setInit(true);
+    }
+  }, [navigate, isInit]);
+
+  if (!isInit) return null;
+
   return (
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route element={<PageLayout />}>
+        <Route
+          element={
+            <UserProvider>
+              <PageLayout />
+            </UserProvider>
+          }
+        >
           <Route
             path="/"
             element={
