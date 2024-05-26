@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
+
 import { User, getMe } from "../api";
 import { LoadingState } from "../enums";
 import { ErrorSnackbar } from "../components/error-snackbar";
@@ -21,25 +22,28 @@ const UserContext = createContext<UserContextType>(initialContext);
 export const UserProvider = ({ children }: React.PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Idle);
-  const fetchUser: () => Promise<void> = async () => {
+  const fetchUser: () => Promise<void> = useCallback(async () => {
     setLoadingState(LoadingState.Fetching);
     try {
       const response = await getMe();
       setUser(response.data);
       setLoadingState(LoadingState.Completed);
     } catch (error) {
+      console.error(error);
       setUser(null);
       setLoadingState(LoadingState.Failed);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
-  const reload = (): void => {
+  const reload = useCallback((): void => {
     fetchUser();
-  };
+  }, [fetchUser]);
+
+  const contextValue = useMemo(() => ({ user, loadingState, reload }), [user, loadingState, reload]);
 
   switch (loadingState) {
     case LoadingState.Idle:
@@ -52,7 +56,7 @@ export const UserProvider = ({ children }: React.PropsWithChildren) => {
     case LoadingState.Failed:
       return <ErrorSnackbar>{"Failed to load user!"}</ErrorSnackbar>;
     default:
-      return <UserContext.Provider value={{ user, loadingState, reload }}>{children}</UserContext.Provider>;
+      return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
   }
 };
 

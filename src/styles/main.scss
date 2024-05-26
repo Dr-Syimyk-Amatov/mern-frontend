@@ -1,3 +1,8 @@
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+
 html[data-platform="windows"] * {
   scrollbar-color: var(--scrollbar-thumb-idle) var(--scrollbar-thumb-track);
   scrollbar-width: thin;

@@ -9,6 +9,7 @@ import { UserProvider } from "./contexts";
 import { Login, Register } from "./components/auth";
 import { Home } from "./components/home";
 import { PageLayout } from "./components/page-layout";
+import { Books } from "./pages/books";
 
 function App() {
   const navigate = useNavigate();
@@ -40,6 +41,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/books"
+            element={
+              <ProtectedRoute>
+                <Books />
               </ProtectedRoute>
             }
           />

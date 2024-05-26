@@ -16,6 +16,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import "./page-layout.scss";
 import { Header } from "../header";
+import { AppNav } from "../app-nav/app-nav";
 
 const drawerWidth = 300;
 
@@ -89,6 +90,7 @@ export function PageLayout({ children }: React.PropsWithChildren) {
             </IconButton>
           </DrawerHeader>
           <Divider />
+          <AppNav></AppNav>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Outlet></Outlet>
